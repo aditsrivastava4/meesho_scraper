@@ -14,6 +14,9 @@ class Scraper(SitemapSpider):
     ]
 
     def sitemap_filter(self, entries):
+        '''
+            Filtering sitemap links
+        '''
         for entry in entries:
             if not entry.get('priority'):
                 yield entry
@@ -21,8 +24,8 @@ class Scraper(SitemapSpider):
     def parse(self, response, **kwargs):
         product_list = response.xpath(
             '//div[contains(@class, "ProductList__GridCol")]/a/@href'
-            )
-        
+        )
+
         for product in product_list:
             yield response.follow(
                 response.urljoin(product.get()),
@@ -34,19 +37,19 @@ class Scraper(SitemapSpider):
         ).get()
 
         # Pagination
-        # if next_page:
-        #     next_page = int(next_page)+1
-        #     next_page_url = response.url
+        if next_page:
+            next_page = int(next_page)+1
+            next_page_url = response.url
 
-        #     if next_page_url.find('?page=') > -1:
-        #         next_page_url = next_page_url.split('?page=')[0]
+            if next_page_url.find('?page=') > -1:
+                next_page_url = next_page_url.split('?page=')[0]
 
-        #     next_page_url = '{}?page={}'.format(next_page_url, next_page)
+            next_page_url = '{}?page={}'.format(next_page_url, next_page)
 
-        #     yield response.follow(
-        #         next_page_url,
-        #         self.parse
-        #     )
+            yield response.follow(
+                next_page_url,
+                self.parse
+            )
 
     def parse_product_page(self, response, **kwargs):
         '''
