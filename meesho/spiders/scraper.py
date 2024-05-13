@@ -15,8 +15,6 @@ class Scraper(SitemapSpider):
 
     def sitemap_filter(self, entries):
         for entry in entries:
-            # if entry.get('loc') == 'https://meesho.com/sunglasses-women/pl/kn07d':
-            #     yield entry
             if not entry.get('priority'):
                 yield entry
 
